@@ -1,0 +1,6 @@
+export enum TCPPatterns {
+  CREATE_USER = 'CREATE_USER',
+  GET_USERS = 'GET_USERS',
+  UPDATE_USER = 'UPDATE_USER',
+  DELETE_USER = 'DELETE_USER',
+}

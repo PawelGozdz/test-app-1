@@ -1,0 +1,57 @@
+{
+  "$schema": "https://json.schemastore.org/nest-cli",
+  "collection": "@nestjs/schematics",
+  "compilerOptions": {
+    "webpack": true,
+    "plugins": [
+      {
+        "name": "@nestjs/swagger",
+        "options": {
+          "classValidatorShim": true,
+          "introspectComments": false
+        }
+      }
+    ],
+    "typeCheck": true
+  },
+  "monorepo": true,
+  "root": "apps/test-app-1",
+  "projects": {
+    "libs": {
+      "type": "library",
+      "root": "libs/libs",
+      "entryFile": "index",
+      "sourceRoot": "libs/libs/src",
+      "compilerOptions": {
+        "tsConfigPath": "libs/libs/tsconfig.lib.json"
+      }
+    },
+    "api-gateway": {
+      "type": "application",
+      "root": "apps/api-gateway",
+      "entryFile": "main",
+      "sourceRoot": "apps/api-gateway/src",
+      "compilerOptions": {
+        "tsConfigPath": "apps/api-gateway/tsconfig.app.json"
+      }
+    },
+    "notifications-service": {
+      "type": "application",
+      "root": "apps/notifications-service",
+      "entryFile": "main",
+      "sourceRoot": "apps/notifications-service/src",
+      "compilerOptions": {
+        "tsConfigPath": "apps/notifications-service/tsconfig.app.json"
+      }
+    },
+    "users-service": {
+      "type": "application",
+      "root": "apps/users-service",
+      "entryFile": "main",
+      "sourceRoot": "apps/users-service/src",
+      "compilerOptions": {
+        "tsConfigPath": "apps/users-service/tsconfig.app.json"
+      }
+    }
+  }
+}

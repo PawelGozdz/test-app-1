@@ -1,0 +1,84 @@
+services:
+  api-gateway:
+    container_name: api-gateway
+    build:
+      context: .
+      dockerfile: ./apps/api-gateway/Dockerfile
+      target: development
+      args:
+        NODE_VERSION: ${NODE_VERSION}
+    volumes:
+      - .:/app
+      - /app/node_modules
+    ports:
+      - "3000:3000"
+    env_file:
+      - .env
+    depends_on:
+      # - mongodb
+      - users-service
+      # - notifications-service
+    networks:
+      - test-app-1
+    command: npm run start:dev api-gateway
+    # restart: unless-stopped
+
+  users-service:
+    container_name: users-service
+    build:
+      context: .
+      dockerfile: ./apps/users-service/Dockerfile
+      target: development
+      args:
+        NODE_VERSION: ${NODE_VERSION}
+    volumes:
+      - .:/app
+      - /app/node_modules
+    env_file:
+      - .env
+    # depends_on:
+    #   - mongodb
+    networks:
+      - test-app-1
+    command: npm run start:dev users-service
+    # restart: unless-stopped
+
+  # notifications-service:
+  #   container_name: notifications-service
+  #   build:
+  #     context: .
+  #     dockerfile: ./apps/notifications-service/Dockerfile
+  #     target: development
+  #     args:
+  #       NODE_VERSION: ${NODE_VERSION}
+  #   volumes:
+  #     - .:/srv
+        # - /srv/node_modules
+  #   env_file:
+  #     - .env
+  #   environment:
+  #     - NODE_ENV=development
+  #   depends_on:
+  #     - mongodb
+  #   networks:
+  #     - test-app-1
+  #   command: npm run start:dev notifications-service
+  #   restart: unless-stopped
+
+  mongodb:
+    container_name: mongodb
+    image: mongo:latest
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: ${DATABASE_USER}
+      MONGO_INITDB_ROOT_PASSWORD: ${DATABASE_PASSWORD}
+    volumes:
+      - ./volumes/mongodb:/data/db
+    ports:
+      - "27017:27017"
+    networks:
+      - test-app-1
+    restart: unless-stopped
+
+networks:
+  test-app-1:
+    driver: bridge
