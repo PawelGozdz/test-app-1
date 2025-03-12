@@ -19,14 +19,14 @@ If you run `docker-compose down -v` folder `volumes` needs to be deleted manuall
 
 ### Endpoints
 
-*Users*
-GET `/api/v1/users`
-POST `/api/v1/users`
-PATCH `/api/v1/users/:id`
-DELETE `/api/v1/users:id`
-GET `/api/v1/users/health`
+**Users**
+- GET `/api/v1/users`
+- POST `/api/v1/users`
+- PATCH `/api/v1/users/:id`
+- DELETE `/api/v1/users:id`
+- GET `/api/v1/users/health`
 
-*Notifications*
-GET `/api/v1/notifications/health`
+**Notifications**
+- GET `/api/v1/notifications/health`
 
 
