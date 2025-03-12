@@ -15,29 +15,7 @@ If you run `docker-compose down -v` folder `volumes` needs to be deleted manuall
 
 ### Architecture
 
-┌─────────────────┐
-│                 │
-│   API Gateway   │
-│                 │
-└─────┬─────┬─────┘
-      │     │
-      │     │
-      ▼     ▼
-┌─────────┐ ┌─────────────────┐
-│         │ │                 │
-│  Users  │ │  Notifications  │
-│ Service │ │     Service     │
-│         │ │                 │
-└────┬─┬──┘ └───────┬─────────┘
-     │ │            │
-     │ └────────┐   │
-     │          │   │
-     ▼          ▼   │
-┌─────────┐ ┌─────────┐
-│         │ │         │
-│ MongoDB │ │ RabbitMQ │
-│         │ │         │
-└─────────┘ └─────────┘
+![alt text](architecture.png)
 
 ### Endpoints
 
