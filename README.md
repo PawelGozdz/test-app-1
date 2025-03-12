@@ -29,4 +29,9 @@ If you run `docker-compose down -v` folder `volumes` needs to be deleted manuall
 **Notifications**
 - GET `/api/v1/notifications/health`
 
+### Testing
+Units test can be ran like so (you can get error if you have old version of node locally installed. To fix it, run node 20+):
 
+```bash
+npm run test
+```
