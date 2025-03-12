@@ -18,7 +18,7 @@ export interface RabbitMQConfig {
 @Injectable()
 export class RabbitMQProducerService extends AbstractMessageProducer implements OnModuleInit, OnModuleDestroy {
   private connection: Connection;
-  private channel: Channel; // Zwykły kanał zamiast ConfirmChannel
+  private channel: Channel; // Regular channel instead of ConfirmChannel
   private readonly config: RabbitMQConfig;
   private readonly exchanges: Set<string> = new Set();
 
@@ -39,7 +39,7 @@ export class RabbitMQProducerService extends AbstractMessageProducer implements 
       exchanges: this.configService.get<Array<any>>('RABBITMQ_EXCHANGES', []),
     };
 
-    // Domyślna konfiguracja - tylko główna kolejka
+    // Default configuration - only main queue
     if (this.config.exchanges.length === 0) {
       this.config.exchanges = [
         { name: 'events', type: 'topic', options: { durable: true } }
@@ -69,7 +69,7 @@ export class RabbitMQProducerService extends AbstractMessageProducer implements 
         this.logger.error(`RabbitMQ connection error: ${err.message}`);
       });
       
-      // Używamy zwykłego kanału zamiast kanału z potwierdzeniami
+      // Using regular channel instead of confirmation channel
       this.channel = await this.connection.createChannel();
       
       this.logger.info('Successfully connected to RabbitMQ');
@@ -98,7 +98,7 @@ export class RabbitMQProducerService extends AbstractMessageProducer implements 
     }
     
     try {
-      // Konfiguracja exchange'y
+      // Configuration of exchanges
       for (const exchange of this.config.exchanges) {
         await this.channel.assertExchange(exchange.name, exchange.type, exchange.options);
         this.exchanges.add(exchange.name);
@@ -115,13 +115,13 @@ export class RabbitMQProducerService extends AbstractMessageProducer implements 
       throw new Error('Cannot publish message: RabbitMQ channel not established');
     }
     
-    // Upewniamy się, że exchange istnieje
+    // Make sure the exchange exists
     if (!this.exchanges.has(options.exchange)) {
       await this.channel.assertExchange(options.exchange, 'topic', { durable: true });
       this.exchanges.add(options.exchange);
     }
     
-    // Przygotowanie opcji publikacji
+    // Preparing publication options
     const publishOptions: Options.Publish = {
       persistent: options.persistent === undefined ? true : options.persistent,
       messageId: options.messageId || crypto.randomUUID(),
@@ -138,10 +138,10 @@ export class RabbitMQProducerService extends AbstractMessageProducer implements 
       publishOptions.headers['x-backoff-delay'] = options.backoff.delay;
     }
     
-    // Przygotowanie treści wiadomości
+    // Preparing message content
     let content = message;
     
-    // Jeśli wiadomość jest obiektem Event, używamy jej bez modyfikacji
+    // If the message is an Event object, use it without modification
     if (message instanceof Event) {
       content = message;
     }
@@ -149,7 +149,7 @@ export class RabbitMQProducerService extends AbstractMessageProducer implements 
     const buffer = Buffer.from(JSON.stringify(content));
     
     try {
-      // Publikowanie wiadomości bez oczekiwania na potwierdzenie
+      // Publishing the message without waiting for confirmation
       const result = this.channel.publish(
         options.exchange,
         options.routingKey,
@@ -157,7 +157,7 @@ export class RabbitMQProducerService extends AbstractMessageProducer implements 
         publishOptions
       );
       
-      // Logowanie wyniku publikacji
+      // Logging publication result
       if (result) {
         this.logger.debug(`Message published to ${options.exchange}:${options.routingKey}`);
       } else {
