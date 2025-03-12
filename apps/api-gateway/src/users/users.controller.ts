@@ -22,6 +22,11 @@ export class UsersController {
     });
   }
 
+  @Get('/health')
+  healthCheck(): Observable<{ status: 'UP' | 'DOWN' }> {
+    return this.usersService.getHealth();
+  }
+
   @Post()
   create(
     @Body() bodyDto: CreateUserDto,

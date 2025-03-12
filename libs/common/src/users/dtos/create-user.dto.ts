@@ -1,7 +1,7 @@
 import { PickType } from "@nestjs/swagger";
 
 import { UserDto } from "./user.dto";
-import { IMetadata } from "@libs/common";
+import { IMetadata } from "../../microservices";
 
 export class CreateUserDto extends PickType(UserDto, ['name', 'email']) {}
 

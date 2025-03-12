@@ -29,6 +29,20 @@ export class UsersService {
     );
   }
 
+  getHealth(): Observable<{ status: 'UP' | 'DOWN' }> {
+    const pattern = TCPPatterns.HEALTH_CHECK;
+    const payload: ITCPRequest<{}> = {
+      data: {
+      },
+      _metadata: {},
+    };
+
+    return this.usersService.send<{ status: 'UP' | 'DOWN' }>(
+      pattern,
+      payload,
+    );
+  }
+
   create(bodyDto: CreateUserDto, _metadata?: IMetadata): Observable<CreateUserResponseDto> {
     const pattern = TCPPatterns.CREATE_USER;
     const payload: ITCPRequest<CreateUserInternalDto['data']> = {

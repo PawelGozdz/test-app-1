@@ -40,4 +40,13 @@ export class UsersServiceController {
   ) {
     return this.deleteHandler.execute(data);
   }
+
+  @MessagePattern(TCPPatterns.HEALTH_CHECK, Transport.TCP)
+  healthCheck(
+    @Payload() _data: any
+  ) {
+    return {
+      status: 'UP'
+    }
+  }
 }

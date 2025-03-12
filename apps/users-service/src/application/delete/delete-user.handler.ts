@@ -3,12 +3,14 @@ import { PinoLogger } from 'nestjs-pino';
 
 import { DeleteUserInternalDto } from '@libs/common';
 import { IUserCommandRepository, UserNotFoundExistsError } from '../../domain';
+import { UserEventsService } from '../../user-events.service';
 
 @Injectable()
 export class DeleteUserHandler {
   constructor(
     private readonly userRepository: IUserCommandRepository,
     private readonly logger: PinoLogger,
+    private readonly userEvents: UserEventsService,
   ) {
     this.logger.setContext(this.constructor.name);
   }
@@ -27,6 +29,8 @@ export class DeleteUserHandler {
     // Additional logic here if needed
 
     await this.userRepository.delete(currentUser.id);
+
+    await this.userEvents.userDeleted(currentUser, dto._metadata);
 
     return;
   }

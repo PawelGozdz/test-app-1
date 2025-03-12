@@ -8,14 +8,13 @@ services:
       args:
         NODE_VERSION: ${NODE_VERSION}
     volumes:
-      - .:/app
-      - /app/node_modules
+      - .:/srv
+      - /srv/node_modules
     ports:
       - "3000:3000"
     env_file:
       - .env
     depends_on:
-      # - mongodb
       - users-service
       # - notifications-service
     networks:
@@ -32,38 +31,38 @@ services:
       args:
         NODE_VERSION: ${NODE_VERSION}
     volumes:
-      - .:/app
-      - /app/node_modules
+      - .:/srv
+      - /srv/node_modules
     env_file:
       - .env
-    # depends_on:
-    #   - mongodb
+    depends_on:
+      rabbitmq:
+        condition: service_healthy
+      mongodb:
+        condition: service_started
     networks:
       - test-app-1
     command: npm run start:dev users-service
-    # restart: unless-stopped
 
-  # notifications-service:
-  #   container_name: notifications-service
-  #   build:
-  #     context: .
-  #     dockerfile: ./apps/notifications-service/Dockerfile
-  #     target: development
-  #     args:
-  #       NODE_VERSION: ${NODE_VERSION}
-  #   volumes:
-  #     - .:/srv
-        # - /srv/node_modules
-  #   env_file:
-  #     - .env
-  #   environment:
-  #     - NODE_ENV=development
-  #   depends_on:
-  #     - mongodb
-  #   networks:
-  #     - test-app-1
-  #   command: npm run start:dev notifications-service
-  #   restart: unless-stopped
+  notifications-service:
+    container_name: notifications-service
+    build:
+      context: .
+      dockerfile: ./apps/notifications-service/Dockerfile
+      target: development
+      args:
+        NODE_VERSION: ${NODE_VERSION}
+    volumes:
+      - .:/srv
+      - /srv/node_modules
+    env_file:
+      - .env
+    depends_on:
+      rabbitmq:
+        condition: service_healthy
+    networks:
+      - test-app-1
+    command: npm run start:dev notifications-service
 
   mongodb:
     container_name: mongodb
@@ -78,6 +77,29 @@ services:
     networks:
       - test-app-1
     restart: unless-stopped
+
+  rabbitmq:
+    container_name: rabbitmq
+    image: rabbitmq:3-management
+    ports:
+      - "5672:5672"
+      - "15672:15672"
+    environment:
+      RABBITMQ_DEFAULT_USER: ${RABBITMQ_USER}
+      RABBITMQ_DEFAULT_PASS: ${RABBITMQ_PASSWORD}
+    healthcheck:
+      test: ["CMD", "rabbitmq-diagnostics", "check_port_connectivity"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 10s
+    networks:
+      - test-app-1
+    volumes:
+      - ./volumes/rabbitmq:/var/lib/rabbitmq
+    restart: unless-stopped
+
+  
 
 networks:
   test-app-1:

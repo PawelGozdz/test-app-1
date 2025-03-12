@@ -10,10 +10,10 @@ import {
   DomainErrorCode,
   FrameworkError,
   FrameworkErrorCode,
-  IResponse,
-  MongoDBErrorCode,
-} from '@libs/common';
+} from '../errors';
 import { IMicroserviceException } from './microservice-exception.interface';
+import { IResponse } from '../microservices';
+import { MongoDBErrorCode } from '../database';
 
 @Catch()
 export class GatewayExceptionFilter implements ExceptionFilter {

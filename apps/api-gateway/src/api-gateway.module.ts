@@ -1,9 +1,10 @@
-import { MiddlewareConsumer, Module, RequestMethod, ValidationPipe } from '@nestjs/common';
+import { MiddlewareConsumer, Module, ValidationPipe } from '@nestjs/common';
 import { APP_FILTER, APP_INTERCEPTOR } from '@nestjs/core';
-import { DefaultIfEmptyInterceptor, CorrelationIdMiddleware, ResponseTransformSuccessInterceptor } from './core';
 import { ConfigModule, ConfigService } from '@nestjs/config';
-import { UsersModule } from './users';
 import { AppLoggerModule, AppLoggingMiddleware, excludedRoutes, GatewayExceptionFilter } from '@libs/common';
+import { UsersModule } from './users';
+import { DefaultIfEmptyInterceptor, CorrelationIdMiddleware, ResponseTransformSuccessInterceptor } from './core';
+import { NotificationsModule } from './notifications';
 
 const providers = [
   CorrelationIdMiddleware,
@@ -42,6 +43,7 @@ const interceptors = [
   imports: [
     ConfigModule.forRoot(),
     UsersModule,
+    NotificationsModule,
     AppLoggerModule.forRootAsync({
       imports: [ConfigModule],
       inject: [ConfigService],

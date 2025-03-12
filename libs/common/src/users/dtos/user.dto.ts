@@ -1,6 +1,6 @@
 import { IsAlphanumeric, IsDefined, IsEmail, IsISO8601, Length } from "class-validator";
-import { IdDto } from "@libs/common";
 import { ApiProperty } from "@nestjs/swagger";
+import { IdDto } from "../../dto";
 
 export class UserDto extends IdDto {
   @ApiProperty({

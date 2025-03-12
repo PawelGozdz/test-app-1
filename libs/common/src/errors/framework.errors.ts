@@ -1,4 +1,4 @@
-import { ErrorOptions, FrameworkErrorCode } from '@libs/common';
+import { ErrorOptions, FrameworkErrorCode } from '../errors';
 
 import { BaseError } from './base.error';
 

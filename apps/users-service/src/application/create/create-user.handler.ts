@@ -3,12 +3,14 @@ import { PinoLogger } from 'nestjs-pino';
 
 import { CreateUserInternalDto, CreateUserResponseDto } from '@libs/common';
 import { IUserCommandRepository, User, UserAlreadyExistsError } from '../../domain';
+import { UserEventsService } from '../../user-events.service';
 
 @Injectable()
 export class CreateUserHandler {
   constructor(
     private readonly userRepository: IUserCommandRepository,
     private readonly logger: PinoLogger,
+    private readonly userEvents: UserEventsService,
   ) {
     this.logger.setContext(this.constructor.name);
   }
@@ -30,11 +32,13 @@ export class CreateUserHandler {
 
     // Additional logic here if needed
 
-    const userInstance = this.createInstance(dto);
+    const user = this.createInstance(dto);
 
-    await this.userRepository.save(userInstance);
+    await this.userRepository.save(user);
 
-    return { id: userInstance.id };
+    await this.userEvents.userCreated(user, dto._metadata);
+
+    return { id: user.id };
   }
 
   private createInstance(dto: CreateUserInternalDto) {

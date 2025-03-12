@@ -10,7 +10,8 @@ async function bootstrap() {
     type: VersioningType.URI,
     defaultVersion: '1',
   });
-  
+  app.enableShutdownHooks();
+
   await app.listen(process.env.port ?? 3000);
 
   process.on('unhandledRejection', (reason, _promise) => {

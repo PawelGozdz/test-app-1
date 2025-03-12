@@ -1,6 +1,7 @@
 import { ApiProperty, IntersectionType, PickType } from "@nestjs/swagger";
 
-import { IMetadata, PaginationDto } from "@libs/common";
+import { IMetadata } from "../../microservices";
+import { PaginationDto } from "../../dto";
 
 import { UserDto } from "./user.dto";
 import { IsOptional } from "class-validator";

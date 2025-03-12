@@ -1,7 +1,7 @@
 import { ArgumentsHost, Catch, ExceptionFilter } from '@nestjs/common';
 import { RpcException } from '@nestjs/microservices';
 import { Observable, throwError } from 'rxjs';
-import { BaseError, DomainError, DomainErrorCode, FrameworkError } from '@libs/common';
+import { BaseError, DomainError, DomainErrorCode, FrameworkError } from '../errors';
 import { IMicroserviceException } from './microservice-exception.interface';
 
 @Catch()

@@ -1,12 +1,19 @@
-import { Controller, Get } from '@nestjs/common';
-import { NotificationsServiceService } from './notifications-service.service';
+import { Controller } from '@nestjs/common';
+import { MessagePattern, Payload, Transport } from '@nestjs/microservices';
+import { TCPPatterns } from '@libs/common';
+
 
 @Controller()
 export class NotificationsServiceController {
-  constructor(private readonly notificationsServiceService: NotificationsServiceService) {}
+  constructor(
+  ) {}
 
-  @Get()
-  getHello(): string {
-    return this.notificationsServiceService.getHello();
+  @MessagePattern(TCPPatterns.HEALTH_CHECK, Transport.TCP)
+  healthCheck(
+    @Payload() _data: any
+  ) {
+    return {
+      status: 'UP'
+    }
   }
 }

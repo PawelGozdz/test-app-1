@@ -2,6 +2,7 @@ import { NestFactory } from '@nestjs/core';
 import { UsersServiceModule } from './users-service.module';
 import { MicroserviceOptions, Transport } from '@nestjs/microservices';
 import { ConfigService } from '@nestjs/config';
+import { RabbitMQProducerService } from '@libs/common';
 
 async function bootstrap() {
   const app = await NestFactory.create(UsersServiceModule);
@@ -22,16 +23,21 @@ async function bootstrap() {
     { inheritAppConfig: true },
   );
 
+  // Running below onModuleInit is a hack because it doesn't run when it gets instantiated in a libs folder
+  // I have not enough time to figure out hoh to fix it
+  const producerService = app.get(RabbitMQProducerService);
+  await producerService.onModuleInit();
+
+  app.enableShutdownHooks();
+
   await app.startAllMicroservices();
 
   process.on('unhandledRejection', (reason, _promise) => {
-    // logger.fatal('Unhandled Promise rejection:', reason);
     process.exit(1);
     // Handle the unhandled promise rejection here
   });
 
   process.on('uncaughtException', (error) => {
-    // logger.fatal('Uncaught Exception:', error);
     process.exit(1);
     // Handle the uncaught exception here
   });

@@ -1,13 +1,15 @@
 import { Module } from '@nestjs/common';
+import { APP_FILTER } from '@nestjs/core';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 
-import { UsersServiceController } from './users-service.controller';
-import { APP_FILTER } from '@nestjs/core';
-import { AppLoggerModule, excludedRoutes, MicroserviceExceptionFilter } from '@libs/common';
 import { MongooseModule } from '@nestjs/mongoose';
+import { AppLoggerModule, excludedRoutes, MicroserviceExceptionFilter, RabbitMQModule } from '@libs/common';
+
+import { UsersServiceController } from './users-service.controller';
 import { UserCommandRepository, UserModel, UserQueryRepository, UserSchema } from './infrastructure';
 import { DeleteUserHandler, CreateUserHandler, UpdateUserHandler, GetManyUsersHandler } from './application';
 import { IUserCommandRepository, IUserQueryRepository } from './domain';
+import { UserEventsService } from './user-events.service';
 
 const errorFilters = [
   {
@@ -29,6 +31,7 @@ const providers = [
   UpdateUserHandler,
   DeleteUserHandler,
   GetManyUsersHandler,
+  UserEventsService,
 ]
 
 @Module({
@@ -64,6 +67,7 @@ const providers = [
     MongooseModule.forFeature([
       { name: UserModel.name, schema: UserSchema }
     ]),
+    RabbitMQModule.forRoot(),
   ],
   controllers: [UsersServiceController],
   providers: [...providers, ...errorFilters],

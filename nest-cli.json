@@ -19,11 +19,11 @@
   "projects": {
     "libs": {
       "type": "library",
-      "root": "libs/libs",
+      "root": "libs/common",
       "entryFile": "index",
-      "sourceRoot": "libs/libs/src",
+      "sourceRoot": "libs/common/src",
       "compilerOptions": {
-        "tsConfigPath": "libs/libs/tsconfig.lib.json"
+        "tsConfigPath": "libs/common/tsconfig.lib.json"
       }
     },
     "api-gateway": {

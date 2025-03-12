@@ -1,7 +1,7 @@
 import { Injectable, NestMiddleware } from '@nestjs/common';
 import { NextFunction, Request, Response } from 'express';
 import { Logger } from 'nestjs-pino';
-import { excludedRoutes } from '.';
+import { excludedRoutes } from './index';
 
 @Injectable()
 export class AppLoggingMiddleware implements NestMiddleware {
